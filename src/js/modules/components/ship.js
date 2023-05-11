@@ -2,13 +2,22 @@ const Ship = function (l) {
   const length = l;
   let numOfHits = 0;
   let sunk = isSunk();
+  let positions = [];
 
   function getLength() {
     return length;
   }
 
+  function getPositions() {
+    return positions;
+  }
+
   function getSunk() {
     return sunk;
+  }
+
+  function addPositions(pos) {
+    positions.push(pos);
   }
 
   function hit() {
@@ -26,7 +35,15 @@ const Ship = function (l) {
     return length === numOfHits ? true : false;
   }
 
-  return { getLength, getSunk, hit, getNumOfHits, isSunk };
+  return {
+    getLength,
+    getSunk,
+    hit,
+    getNumOfHits,
+    isSunk,
+    addPositions,
+    getPositions,
+  };
 };
 
 export default Ship;
