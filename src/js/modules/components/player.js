@@ -1,7 +1,12 @@
 import Gameboard from "./gameboard";
 
-const Player = function () {
+const Player = function (playerName) {
+  let name = playerName;
   const gameboard = Gameboard();
+
+  const getName = function () {
+    return name;
+  };
 
   const getGameBoard = function () {
     return gameboard;
@@ -12,5 +17,7 @@ const Player = function () {
     enemyGameBoard.receiveAttack(posA, posB);
   };
 
-  return { getGameBoard };
+  return { getGameBoard, getName };
 };
+
+export default Player;
