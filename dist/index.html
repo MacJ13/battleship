@@ -9,6 +9,46 @@
     <script src="main.js" defer></script>
   </head>
   <body>
-    <h1>Battleship</h1>
+    <header class="header">
+      <h1 class="h1 main-title">Battleship</h1>
+    </header>
+    <div class="menu">
+      <div class="menu-title">
+        <h2 class="h2">Create Players</h2>
+      </div>
+      <div class="menu-form">
+        <div class="menu-player">
+          <!-- <label for="player1_name">Player 1 name</label> -->
+          <input
+            type="text"
+            id="player1_name"
+            name="player1_name"
+            placeholder="Player 1 name"
+          />
+        </div>
+        <div class="menu-player">
+          <!-- <label for="player2_name">Player 2 name</label> -->
+          <input
+            type="text"
+            id="player2_name"
+            name="player2_name"
+            placeholder="Player 2 name"
+          />
+          <div class="menu-computer">
+            <label for="computer"> play with computer</label>
+            <input
+              type="checkbox"
+              name="computer_name"
+              id="computer_name"
+              value="computer"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="menu-btn">
+        <button id="create-player-btn" type="button">Create</button>
+      </div>
+    </div>
+    <div class="game"></div>
   </body>
 </html>
