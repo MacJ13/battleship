@@ -1,10 +1,12 @@
 import Ship from "./ship.js";
 
 const Gameboard = function () {
-  const board = [];
+  let board = [];
   const maxSize = 10;
 
   const createBoard = function () {
+    board = [];
+
     for (let i = 0; i < maxSize; i++) {
       board[i] = [];
       for (let j = 0; j < maxSize; j++) {
@@ -19,6 +21,27 @@ const Gameboard = function () {
   };
 
   createBoard();
+
+  const getGameBoard = function () {
+    return board;
+  };
+
+  const randomPlaceShips = function (ships) {
+    createBoard();
+    const positions = ["vertical", "horizontal"];
+
+    // console.log(ships);
+    while (ships.length > 0) {
+      let x = Math.floor(Math.random() * 10);
+      let y = Math.floor(Math.random() * 10);
+      let randomPosition = Math.floor(Math.random() * positions.length);
+      const [first, ...others] = ships;
+      const shipOnPosition = placeShips(x, y, first, positions[randomPosition]);
+      if (shipOnPosition) ships = others;
+    }
+
+    return board;
+  };
 
   const placeShips = function (posA, posB, ship, dir = "vertical") {
     if (board[posA][posB].shipCell || board[posA][posB].res) return;
@@ -84,6 +107,8 @@ const Gameboard = function () {
         board[posA + i][posB].shipCell = ship;
       }
     }
+
+    return ship;
   };
 
   const receiveAttack = function (posA, posB) {
@@ -104,7 +129,14 @@ const Gameboard = function () {
     }
   };
 
-  return { board, placeShips, receiveAttack };
+  return {
+    board,
+    placeShips,
+    receiveAttack,
+    createBoard,
+    randomPlaceShips,
+    getGameBoard,
+  };
 };
 
 const gameboard = Gameboard();
