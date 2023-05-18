@@ -36,18 +36,18 @@ input::placeholder {
 
 .header {
   width: 100%;
-  padding: 2rem;
+  padding: 1.75rem;
 }
 
 .main-title {
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.5rem;
-  margin-bottom: 4rem;
+  // margin-bottom: 2rem;
 }
 
 .h1 {
-  font-size: 3.5rem;
+  font-size: 3.25rem;
 }
 
 .h2 {
@@ -122,4 +122,171 @@ input::placeholder {
 
     cursor: pointer;
   }
+}
+
+.game {
+  display: none;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.game-container {
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+}
+
+.game-ships {
+  display: flex;
+  flex-direction: column;
+}
+
+.game-box {
+  display: flex;
+  gap: 1.5rem;
+}
+
+#game-player1 {
+}
+
+#game-player2 {
+  flex-direction: row-reverse;
+
+  & .game-ship-list {
+    align-items: start;
+  }
+}
+
+.game-playername {
+  margin-top: 1rem;
+  text-align: center;
+
+  margin-bottom: 2rem;
+}
+
+.game-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-ship-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1.5rem;
+
+  width: 100%;
+  max-width: 18rem;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+}
+
+.game-ship-pick-place {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.game-ship-pick {
+  position: relative;
+  width: 100%;
+  height: 10rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.ship-pick {
+  flex: 1;
+  display: grid;
+  // grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(4, 1fr);
+  background-color: #082f49;
+
+  gap: 1px;
+  padding: 1px;
+
+  margin-bottom: 0.5rem;
+
+  cursor: pointer;
+
+  &-part {
+    height: 1.75rem;
+    width: 1.75rem;
+    background-color: #f0f9ff;
+  }
+
+  &-amount {
+    text-align: center;
+  }
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+
+  & .reserved {
+    background-color: #1b74ae;
+  }
+}
+
+.game-cell {
+  height: 1.75rem;
+  width: 1.75rem;
+  background-color: #082f49;
+}
+
+.game-ship-cell {
+  background-color: orangered !important;
+}
+
+.game-ship {
+  &-list {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 0.25rem;
+    margin-bottom: 1.5rem;
+  }
+  &-item {
+    display: flex;
+    gap: 2px;
+  }
+
+  &-part {
+    height: 0.5rem;
+    width: 0.5rem;
+    background-color: #082f49;
+    opacity: 0.25;
+  }
+}
+
+.game-ship-btn {
+  border: none;
+  background-color: #85bafb;
+  color: #f0f9ff;
+  font-size: 1.1rem;
+  text-transform: capitalize;
+  width: 8rem;
+  padding: 0.5rem 0;
+
+  cursor: pointer;
+}
+
+#game-random-btn {
+  // margin-bottom: 0.75rem;
+}
+
+#game-reset-btn {
+  // margin-bottom: 3rem;
+}
+
+#game-play-btn {
+  width: 100%;
+}
+
+.hidden {
+  display: none;
 }
