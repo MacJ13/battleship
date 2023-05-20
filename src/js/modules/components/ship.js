@@ -35,7 +35,12 @@ const Ship = function (l) {
     return length === numOfHits ? true : false;
   }
 
+  function getReservedPositions() {
+    return positions;
+  }
+
   return {
+    getReservedPositions,
     getLength,
     getSunk,
     hit,
