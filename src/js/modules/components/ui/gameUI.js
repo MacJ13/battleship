@@ -9,25 +9,20 @@ function GameUI() {
   const gamePlayer2Element = document.getElementById("game-player2");
 
   const gameBoardPlayer1 = gamePlayer1Element.querySelector(".game-board");
-
-  // const gameShipListElement = document.querySelector(".game-ship-list");
+  const gameBoardPlayer2 = gamePlayer2Element.querySelector(".game-board");
+  const gameButtonsPlayer1 =
+    gamePlayer1Element.querySelector(".game-ship-buttons");
 
   const gameShipPickElement = gamePlayer1Element.querySelector(".ship-pick");
   const gameShipAmountElement =
     gamePlayer1Element.querySelector(".ship-pick-amount");
 
   let draggedTarget = null;
-
-  // let shipData = null;
-  // let currentShip = null;
-
-  // // const getData = function (data) {
-  // //   shipData = [...data];
-  // // };
+  let targetGameBoardEl = null;
 
   const renderGamePlayerElements = function (players) {
-    console.log(players);
-    gameElement.style.display = "block";
+    // console.log(players);
+    // gameElement.style.display = "block";
 
     [gamePlayer1Element, gamePlayer2Element].forEach((playerEl, i) => {
       const gameBoardEl = playerEl.querySelector(".game-board");
@@ -35,10 +30,22 @@ function GameUI() {
       const gameShipListEl = playerEl.querySelector(".game-ship-list");
 
       renderPlayerName(gamePlayerEl, players[i].getName());
-      renderGameBoard(gameBoardEl, players[i].getGameBoard());
+      renderGameBoard(gameBoardEl, players[i].getPlayerBoard());
       renderShipList(gameShipListEl, players[i].getShips());
     });
+
+    toggleGameButtons();
+
+    showGameElements();
   };
+
+  function toggleGameButtons() {
+    gameButtonsPlayer1.classList.toggle("hidden");
+  }
+
+  function showGameElements() {
+    gameElement.classList.add("show");
+  }
 
   function renderShipPick(ship, count) {
     const parentEl = gameShipPickElement.closest(".game-ship-pick-place");
@@ -108,8 +115,21 @@ function GameUI() {
     }
   }
 
-  const clearGameBoard = function (player) {
-    renderGameBoard(gameBoardPlayer1, player.getGameBoard());
+  const renderTargetGameBoardCell = function (pos, ship, gameBoardId) {
+    targetGameBoardEl = document.getElementById(gameBoardId);
+
+    const gameBoardCell = targetGameBoardEl.querySelector(
+      `span[data-pos="${pos}"]`
+    );
+
+    const span = document.createElement("span");
+    span.className = ship ? "hit" : "miss";
+
+    gameBoardCell.appendChild(span);
+  };
+
+  const clearGameBoard = function (gameboard) {
+    renderGameBoard(gameBoardPlayer1, gameboard);
     hidePlayButton();
   };
 
@@ -123,50 +143,6 @@ function GameUI() {
     clearShipPick();
     showPlayButton();
   };
-
-  // function renderShipPick() {
-  //   const parentEl = gameShipPickElement.closest(".game-ship-pick-place");
-  //   parentEl.style.display = "block";
-  //   gameShipPickElement.innerHTML = "";
-
-  //   if (shipData.length <= 0) {
-  //     clearShipPick();
-  //     return;
-  //   }
-
-  //   // const [first] = shipData.pop;
-  //   // console.log({ first });
-  //   console.log();
-  //   currentShip = shipData.shift();
-
-  //   const amountTypeShip =
-  //     shipData.filter((ship) => ship.getLength() === currentShip.getLength())
-  //       .length + 1;
-
-  //   for (let i = 0; i < currentShip.getLength(); i++) {
-  //     const span = document.createElement("span");
-  //     span.className = "ship-pick-part";
-
-  //     gameShipPickElement.appendChild(span);
-  //   }
-
-  //   const { position } = gameShipPickElement.dataset;
-
-  //   if (position === "horizontal") {
-  //     gameShipPickElement.style.gridTemplateColumns = `repeat(${currentShip.getLength()}, 1fr)`;
-  //   } else {
-  //     gameShipPickElement.style.gridTemplateColumns = `repeat(1, 1fr)`;
-  //   }
-
-  //   gameShipAmountElement.textContent = `x${amountTypeShip}`;
-
-  //   // const [first] = shipData;
-
-  //   // currentShip = first;
-  //   // shipData = shipData.slice(1);
-
-  //   console.log(currentShip, { length: shipData.length });
-  // }
 
   const renderShipOnGameBoard = function (obj, currentShip) {
     const { pos, position } = obj;
@@ -220,17 +196,6 @@ function GameUI() {
     });
   };
 
-  // const toggleReservedCells = function (board) {
-  //   gameBoardPlayer1.querySelectorAll(".game-cell").forEach((cellEl) => {
-  //     const pos = cellEl.dataset.pos;
-  //     const [x, y] = pos.split("");
-  //     const { res } = board[+x][+y];
-  //     if (res) {
-  //       cellEl.classList.toggle("reserved");
-  //     }
-  //   });
-  // };
-
   const hidePlayButton = function () {
     if (gamePlayButton.classList.contains("hidden")) return;
     gamePlayButton.classList.add("hidden");
@@ -255,21 +220,12 @@ function GameUI() {
     gameRandomButton.addEventListener("click", callback);
   };
 
-  // const onDragStartShipPick = function (playerBoard) {
-  //   gameShipPickElement.addEventListener("dragstart", (event) => {
-  //     // start draggable
-  //     draggedTarget = event.target;
-  //     showReservedCells(playerBoard);
-  //   });
-  // };
-
-  const onDropShipPick = function (callback, getPlayerBoard) {
-    // let dragged = null;
+  const onDropShipPick = function (callback, getBoard) {
     // start draggable
     gameShipPickElement.addEventListener("dragstart", (event) => {
       draggedTarget = event.target;
 
-      showReservedCells(getPlayerBoard());
+      showReservedCells(getBoard());
     });
 
     // gameBoardPlayer1.addEventListener("dragover", (event) => {
@@ -282,7 +238,7 @@ function GameUI() {
     document.body.addEventListener("drop", (event) => {
       event.preventDefault();
       // move dragged element to the selected drop target {
-      hideReservedCells(getPlayerBoard());
+      hideReservedCells(getBoard());
       const parent = event.target.closest("#game-player1");
 
       if (
@@ -296,37 +252,35 @@ function GameUI() {
         pos: event.target.dataset.pos,
         position: draggedTarget.dataset.position,
       };
+
       draggedTarget = null;
       callback(obj);
-      //   if (
-      //     !parent ||
-      //     !draggedTarget ||
-      //     !event.target.classList.contains("game-cell")
-      //   )
-      //     return;
-      //   console.log({ target: event.target });
-      //   console.log("PASS IT !!!!!!!!!!!!!!!!");
-      //   const obj = {
-      //     pos: event.target.dataset.pos,
-      //     currentShip,
-      //     position: draggedTarget.dataset.position,
-      //   };
+    });
+  };
 
-      //   cb1(obj);
-      //   draggedTarget = null;
-      //   // if (shipData.length === 0 && currentShip) {
-      //   //   currentShip = null;
-      //   // }
+  const onClickPlayBtn = function (callback) {
+    gamePlayButton.addEventListener("click", () => {
+      // toggleGameButtons();
+      callback();
+    });
+  };
 
-      //   if (shipData.length === 0) {
-      //     gamePlayButton.classList.remove("hidden");
-      //   }
+  const onClickGameBoardPlayer2 = function (callback) {
+    gameBoardPlayer2.addEventListener("click", (event) => {
+      // check if clicked target is element with "game-cell" class
+      const target = event.target;
+      if (!target.classList.contains("game-cell")) return;
 
-      //   hideReservedCells(getPlayerBoard());
+      // get attribute data-pos from element
+      const { pos } = event.target.dataset;
+
+      // pass attribute to callback
+      callback(pos);
     });
   };
 
   return {
+    renderTargetGameBoardCell,
     renderGamePlayerElements,
     renderShipOnGameBoard,
     renderRandomGameBoard,
@@ -337,6 +291,8 @@ function GameUI() {
     onClickShipPick,
     onClickResetBtn,
     onClickRandomBtn,
+    onClickPlayBtn,
+    onClickGameBoardPlayer2,
   };
 }
 
