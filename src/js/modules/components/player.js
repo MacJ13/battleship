@@ -1,8 +1,12 @@
 import Gameboard from "./gameboard";
 import Ship from "./ship";
 
-const Player = function (playerName) {
+const Player = function (id, playerName) {
   let name = playerName;
+  let gameId = id;
+
+  const positionBoard = [];
+
   const gameboard = Gameboard();
 
   const ships = [
@@ -16,9 +20,27 @@ const Player = function (playerName) {
     Ship(1),
   ];
 
-  const getCountShips = function (currentShip) {
-    return ships.filter((ship) => ship.getLength() === currentShip.getLength())
-      .length;
+  const saveAllPositionBoard = function (board) {
+    let j = 0;
+
+    console.log(board);
+    for (let i = 0; i <= board.length; i++) {
+      if (i === board.length) {
+        j++;
+        i = 0;
+      }
+      if (j === 10) {
+        break;
+      }
+      positionBoard.push(`${j}${i}`);
+      // console.log(`[${j}${i}]`);
+    }
+    // console.log(positionBoard);
+    // console.log(boardTest);
+  };
+
+  const getGameId = function () {
+    return gameId;
   };
 
   const getShips = function () {
@@ -40,31 +62,38 @@ const Player = function (playerName) {
 
   const getRandomShipsPosition = function () {
     const shipsArr = [...ships];
-
-    return gameboard.randomPlaceShips(shipsArr);
+    gameboard.randomPlaceShips(shipsArr);
   };
 
-  const getGameBoard = function () {
-    return gameboard.getGameBoard();
+  const getPlayerBoard = function () {
+    return gameboard.getBoard();
   };
 
   const clearGameBoard = function () {
     gameboard.createBoard();
   };
 
-  const attack = function (player, posA, posB) {
-    const enemyGameBoard = player.getGameBoard();
-    enemyGameBoard.receiveAttack(posA, posB);
+  const attack = function (pos) {
+    const [x, y] = pos.split("");
+    return gameboard.receiveAttack(+x, +y);
+  };
+
+  const getPlayerBoardCell = function (enemyPlayer, pos) {
+    // enemyGameBoard.receiveAttack(pos);
+    return enemyPlayer.attack(pos);
   };
 
   return {
-    getCountShips,
-    getGameBoard,
+    saveAllPositionBoard,
+    getGameId,
+    attack,
+    getPlayerBoard,
     getName,
     getShips,
     getShipOnGameBoard,
     clearGameBoard,
     getRandomShipsPosition,
+    getPlayerBoardCell,
   };
 };
 
