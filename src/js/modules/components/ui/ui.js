@@ -5,19 +5,36 @@ const UI = function () {
   const computerCheckbox = document.getElementById("computer_name");
   const createPlayerBtn = document.getElementById("create-player-btn");
 
+  const getInputValue = function (value, i) {
+    return value || `Player ${i + 1}`;
+  };
+
   const getPlayerNames = function () {
-    let player1 = player1Input.value || "Player 1";
-    let player2 = player2Input.value || "Player 2";
+    const players = [];
+
+    // let player1Name = player1Input.value || "Player 1";
+    // let player2Name = player2Input.value || "Player 2";
     // console.dir(computerCheckbox);
     // console.log({ checked: computerCheckbox.checked });
 
     if (computerCheckbox.checked) {
-      player2 = "Computer";
+      player2Input.value = computerCheckbox.value;
     }
 
     playerMenuEl.style.display = "none";
 
-    return { player1, player2 };
+    const inputs = playerMenuEl.querySelectorAll(`input[type="text"]`);
+
+    inputs.forEach((input, i) => {
+      const playerName = !input.disabled
+        ? getInputValue(input.value, i)
+        : computerCheckbox.value;
+      const playerId = input.dataset.gameboard;
+
+      players.push({ playerId, playerName });
+    });
+
+    return players;
   };
 
   const onClickCreatePlayer = function (cb) {
