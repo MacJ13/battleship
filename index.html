@@ -24,6 +24,7 @@
             id="player1_name"
             name="player1_name"
             placeholder="Player 1 name"
+            data-gameboard="game-player1"
           />
         </div>
         <div class="menu-player">
@@ -33,6 +34,7 @@
             id="player2_name"
             name="player2_name"
             placeholder="Player 2 name"
+            data-gameboard="game-player2"
           />
           <div class="menu-computer">
             <label for="computer"> play with computer</label>
@@ -66,7 +68,7 @@
           <div class="game-inner">
             <div class="game-board" id="droptarget"></div>
             <h3 class="game-playername h3"></h3>
-            <div class="game-ship-buttons">
+            <div class="game-ship-buttons hidden">
               <button class="game-ship-btn" id="game-random-btn">random</button>
               <button class="game-ship-btn" id="game-reset-btn">reset</button>
               <button class="game-ship-btn hidden" id="game-play-btn">
