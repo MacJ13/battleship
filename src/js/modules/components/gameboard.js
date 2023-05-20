@@ -9,20 +9,39 @@ const Gameboard = function () {
 
     for (let i = 0; i < maxSize; i++) {
       board[i] = [];
-      for (let j = 0; j < maxSize; j++) {
-        board[i][j] = {
-          id: +`${i}${j}`,
-          shipCell: null,
-          marked: false,
-          res: false,
-        };
-      }
     }
+
+    let j = 0;
+    for (let i = 0; i <= board.length; i++) {
+      if (i === board.length) {
+        j++;
+        i = 0;
+      }
+      if (j === 10) break;
+
+      board[j][i] = {
+        // id: +`${i}${j}`,
+        shipCell: null,
+        marked: false,
+        res: false,
+      };
+    }
+    // for (let i = 0; i < maxSize; i++) {
+    //   board[i] = [];
+    //   for (let j = 0; j < maxSize; j++) {
+    //     board[i][j] = {
+    //       id: +`${i}${j}`,
+    //       shipCell: null,
+    //       marked: false,
+    //       res: false,
+    //     };
+    //   }
+    // }
   };
 
   createBoard();
 
-  const getGameBoard = function () {
+  const getBoard = function () {
     return board;
   };
 
@@ -32,8 +51,8 @@ const Gameboard = function () {
 
     // console.log(ships);
     while (ships.length > 0) {
-      let x = Math.floor(Math.random() * 10);
-      let y = Math.floor(Math.random() * 10);
+      let x = Math.floor(Math.random() * maxSize);
+      let y = Math.floor(Math.random() * maxSize);
       let randomPosition = Math.floor(Math.random() * positions.length);
       const [first, ...others] = ships;
       const shipOnPosition = placeShips(x, y, first, positions[randomPosition]);
@@ -56,25 +75,27 @@ const Gameboard = function () {
         if (shipCell || res) return;
       }
 
+      // fill board position with ship elements
+      for (let i = 0; i < ship.getLength(); i++) {
+        board[posA][posB + i].shipCell = ship;
+      }
+
+      // fill board with reserved cells around ship elements
       for (let i = -1; i <= 1; i++) {
         if (!board[posA + i]) continue;
         for (let j = -1; j <= ship.getLength(); j++) {
           if (
             posB + j < 0 ||
             posB + j >= maxSize ||
-            board[posA + i][posB + j].res === true
+            board[posA + i][posB + j].shipCell
           )
             continue;
 
           board[posA + i][posB + j].res = true;
           // console.log(board[posA + i][posB + j]);
-          ship.addPositions(board[posA + i][posB + j]);
+          // ship.addPositions(board[posA + i][posB + j]);
+          ship.addPositions({ posA: posA + i, posB: posB + j });
         }
-      }
-
-      // fill board position with ship elements
-      for (let i = 0; i < ship.getLength(); i++) {
-        board[posA][posB + i].shipCell = ship;
       }
 
       // for vertical place for ships
@@ -88,6 +109,10 @@ const Gameboard = function () {
         if (shipCell || res) return;
       }
 
+      for (let i = 0; i < ship.getLength(); i++) {
+        board[posA + i][posB].shipCell = ship;
+      }
+
       for (let i = -1; i <= ship.getLength(); i++) {
         if (!board[posA + i]) continue;
 
@@ -95,16 +120,13 @@ const Gameboard = function () {
           if (
             posB + j < 0 ||
             posB + j >= maxSize ||
-            board[posA + i][posB + j].res === true
+            board[posA + i][posB + j].shipCell
           )
             continue;
           board[posA + i][posB + j].res = true;
-          ship.addPositions(board[posA + i][posB + j]);
+          // ship.addPositions(board[posA + i][posB + j]);
+          ship.addPositions({ posA: posA + i, posB: posB + j });
         }
-      }
-
-      for (let i = 0; i < ship.getLength(); i++) {
-        board[posA + i][posB].shipCell = ship;
       }
     }
 
@@ -112,30 +134,49 @@ const Gameboard = function () {
   };
 
   const receiveAttack = function (posA, posB) {
+    // console.log(board[posA][posB]);
     const { marked, shipCell } = board[posA][posB];
-    if (marked) {
-      console.log("you already marked cell !!!!!");
-      return;
-    }
+    // console.log(shipCell);
+    // check if element is marked:
+    // console.log({ marked });
+    if (marked) return;
+
+    // set marked property to true;
     board[posA][posB].marked = true;
 
-    if (shipCell) {
-      shipCell.hit();
-      if (shipCell.isSunk()) {
-        console.log("you hit all ship elements!!!!");
-      } else {
-        console.log("you hit ship!!!");
-      }
-    }
+    // note hit if shiCell is on cell
+    if (shipCell) shipCell.hit();
+
+    return board[posA][posB];
+    // return element
+    // return board[posA][posB];
+
+    // board[posA]
+    // console.log({ marked, shipCell });
+
+    // const { marked, shipCell } = board[posA][posB];
+    // if (marked) {
+    //   console.log("you already marked cell !!!!!");
+    //   return;
+    // }
+    // board[posA][posB].marked = true;
+
+    // if (shipCell) {
+    //   shipCell.hit();
+    //   if (shipCell.isSunk()) {
+    //     console.log("you hit all ship elements!!!!");
+    //   } else {
+    //     console.log("you hit ship!!!");
+    //   }
+    // }
   };
 
   return {
-    board,
     placeShips,
     receiveAttack,
     createBoard,
     randomPlaceShips,
-    getGameBoard,
+    getBoard,
   };
 };
 
