@@ -37,6 +37,10 @@ const UI = function () {
     return players;
   };
 
+  const getCheckboxValue = function () {
+    return computerCheckbox.value;
+  };
+
   const onClickCreatePlayer = function (cb) {
     createPlayerBtn.addEventListener("click", () => {
       cb();
@@ -53,7 +57,12 @@ const UI = function () {
     });
   };
 
-  return { onClickCreatePlayer, onClickCheckBox, getPlayerNames };
+  return {
+    onClickCreatePlayer,
+    onClickCheckBox,
+    getPlayerNames,
+    getCheckboxValue,
+  };
 };
 
 export default UI;
