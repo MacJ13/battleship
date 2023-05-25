@@ -4,8 +4,12 @@ const Gameboard = function () {
   let board = [];
   const maxSize = 10;
 
+  const clearGameBoard = function () {
+    board.length = 0;
+  };
+
   const createBoard = function () {
-    board = [];
+    clearGameBoard();
 
     for (let i = 0; i < maxSize; i++) {
       board[i] = [];
@@ -63,6 +67,7 @@ const Gameboard = function () {
   };
 
   const placeShips = function (posA, posB, ship, dir = "vertical") {
+    ship.clearReservedPositions();
     if (board[posA][posB].shipCell || board[posA][posB].res) return;
     // for horizontal place for ship length
     if (dir === "horizontal") {
@@ -93,8 +98,8 @@ const Gameboard = function () {
 
           board[posA + i][posB + j].res = true;
           // console.log(board[posA + i][posB + j]);
-          // ship.addPositions(board[posA + i][posB + j]);
-          ship.addPositions({ posA: posA + i, posB: posB + j });
+          // ship.addReservedPositions(board[posA + i][posB + j]);
+          ship.addReservedPositions({ posA: posA + i, posB: posB + j });
         }
       }
 
@@ -124,8 +129,8 @@ const Gameboard = function () {
           )
             continue;
           board[posA + i][posB + j].res = true;
-          // ship.addPositions(board[posA + i][posB + j]);
-          ship.addPositions({ posA: posA + i, posB: posB + j });
+          // ship.addReservedPositions(board[posA + i][posB + j]);
+          ship.addReservedPositions({ posA: posA + i, posB: posB + j });
         }
       }
     }
@@ -134,11 +139,8 @@ const Gameboard = function () {
   };
 
   const receiveAttack = function (posA, posB) {
-    // console.log(board[posA][posB]);
     const { marked, shipCell } = board[posA][posB];
-    // console.log(shipCell);
     // check if element is marked:
-    // console.log({ marked });
     if (marked) return;
 
     // set marked property to true;
@@ -147,31 +149,19 @@ const Gameboard = function () {
     // note hit if shiCell is on cell
     if (shipCell) shipCell.hit();
 
+    // return object from board element
     return board[posA][posB];
-    // return element
-    // return board[posA][posB];
+  };
 
-    // board[posA]
-    // console.log({ marked, shipCell });
-
-    // const { marked, shipCell } = board[posA][posB];
-    // if (marked) {
-    //   console.log("you already marked cell !!!!!");
-    //   return;
-    // }
-    // board[posA][posB].marked = true;
-
-    // if (shipCell) {
-    //   shipCell.hit();
-    //   if (shipCell.isSunk()) {
-    //     console.log("you hit all ship elements!!!!");
-    //   } else {
-    //     console.log("you hit ship!!!");
-    //   }
-    // }
+  const setReservedCellBoard = function (positions) {
+    for (let i = 0; i < positions.length; i++) {
+      let { posA, posB } = positions[i];
+      if (!board[posA][posB].marked) board[posA][posB].marked = true;
+    }
   };
 
   return {
+    setReservedCellBoard,
     placeShips,
     receiveAttack,
     createBoard,
