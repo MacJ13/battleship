@@ -60,4 +60,47 @@ const queue = (function () {
   };
 })();
 
-export { queue };
+const binarySearch = function (arr, index) {
+  let left = 0;
+  let right = arr.length - 1;
+
+  let mid;
+
+  while (right >= left) {
+    mid = left + Math.floor((right - left) / 2);
+
+    // If the element is present at the middle
+    // itself
+    if (arr[mid] == index) return mid;
+
+    // If element is smaller than mid, then
+    // it can only be present in left subarray
+    if (arr[mid] > index) right = mid - 1;
+    // Else the element can only be present
+    // in right subarray
+    else left = mid + 1;
+  }
+
+  return -1;
+};
+
+// timeout for computer player two stop time for some time
+const timeout = (function () {
+  let timeoutVar = null;
+  let second = 500;
+
+  const setTime = function (cb) {
+    timeoutVar = setTimeout(() => {
+      timeoutVar = null;
+      cb();
+    }, second);
+  };
+
+  const getTime = function () {
+    return timeoutVar;
+  };
+
+  return { setTime, getTime };
+})();
+
+export { queue, binarySearch, timeout };
