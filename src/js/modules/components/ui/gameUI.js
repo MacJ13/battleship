@@ -101,10 +101,24 @@ function GameUI() {
     }
   }
 
+  // Do poprawy funkcja
+  function renderShipListAgain(player) {
+    // console.log({ player, id: player.getGameId() });
+    const currentBox = document.getElementById(player.getGameId());
+    const shipList = currentBox.querySelector(".game-ship-list");
+    // console.log(shipListElTest);
+    renderShipList(shipList, player.getShips());
+  }
+
   function renderShipList(el, ships) {
+    el.innerHTML = "";
     for (let i = 0; i < ships.length; i++) {
       const li = document.createElement("li");
       li.classList.add("game-ship-item");
+      // console.log({ shipSunk: ships[i].isSunk() });
+      if (ships[i].isSunk()) {
+        li.classList.add("sunk");
+      }
 
       for (let j = 0; j < ships[i].getLength(); j++) {
         const span = document.createElement("span");
@@ -157,6 +171,22 @@ function GameUI() {
         `span[data-pos="${currentPos}"]`
       );
       partEl.classList.add("game-ship-cell");
+    }
+  };
+
+  const renderReservedPostions = function (player, reservedPositions) {
+    const currentBox = document.getElementById(player.getGameId());
+
+    for (let i = 0; i < reservedPositions.length; i++) {
+      const { posA, posB } = reservedPositions[i];
+      const boardCell = currentBox.querySelector(
+        `span[data-pos="${posA}${posB}"]`
+      );
+      if (boardCell.childElementCount <= 0) {
+        const span = document.createElement("span");
+        span.className = "miss";
+        boardCell.appendChild(span);
+      }
     }
   };
 
@@ -260,7 +290,7 @@ function GameUI() {
 
   const onClickPlayBtn = function (callback) {
     gamePlayButton.addEventListener("click", () => {
-      // toggleGameButtons();
+      toggleGameButtons();
       callback();
     });
   };
@@ -280,6 +310,10 @@ function GameUI() {
   };
 
   return {
+    renderReservedPostions,
+    //////////////////////
+    renderShipListAgain,
+    //////////////////////
     renderTargetGameBoardCell,
     renderGamePlayerElements,
     renderShipOnGameBoard,
