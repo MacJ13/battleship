@@ -2,22 +2,18 @@ const Ship = function (l) {
   const length = l;
   let numOfHits = 0;
   let sunk = isSunk();
-  let positions = [];
+  let reservedPositions = [];
 
   function getLength() {
     return length;
-  }
-
-  function getPositions() {
-    return positions;
   }
 
   function getSunk() {
     return sunk;
   }
 
-  function addPositions(pos) {
-    positions.push(pos);
+  function addReservedPositions(pos) {
+    reservedPositions.push(pos);
   }
 
   function hit() {
@@ -36,18 +32,22 @@ const Ship = function (l) {
   }
 
   function getReservedPositions() {
-    return positions;
+    return reservedPositions;
+  }
+
+  function clearReservedPositions() {
+    reservedPositions.length = 0;
   }
 
   return {
+    clearReservedPositions,
     getReservedPositions,
     getLength,
     getSunk,
     hit,
     getNumOfHits,
     isSunk,
-    addPositions,
-    getPositions,
+    addReservedPositions,
   };
 };
 
