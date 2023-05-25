@@ -18,10 +18,6 @@ const Player = function (id, playerName) {
     Ship(1),
   ];
 
-  const allShipsSink = function () {
-    return ships.every((ship) => ship.isSunk());
-  };
-
   const getGameId = function () {
     return gameId;
   };
@@ -101,7 +97,6 @@ const Player = function (id, playerName) {
     clearGameBoard,
     getRandomShipsPosition,
     getPlayerBoardCell,
-    allShipsSink,
   };
 };
 

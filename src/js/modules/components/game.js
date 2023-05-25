@@ -1,44 +1,52 @@
 import UI from "./ui/ui";
 import Player from "./player";
+import ComputerAI from "./computerAI";
 import GameUI from "./ui/gameUI";
 
-import { queue } from "./helpers";
+import { queue, timeout } from "./helpers";
 
 const Game = function () {
   const ui = UI();
-  let gameUI = null;
+  let gameUI = GameUI();
   const players = [];
 
   let currentPlayer = null;
   let enemyPlayer = null;
 
-  let timeout = null;
+  // let timeout = null;
   // const queue = Queue();
 
   const createPLayers = function () {
     // get players info from inputs
     const playersUI = ui.getPlayerNames();
-    // console.log(playersUI);
 
     //  create players objects and add to players array
-    for (let { playerId, playerName } of playersUI)
-      players.push(Player(playerId, playerName));
+    for (let { playerId, playerName } of playersUI) {
+      const player =
+        playerName !== ui.getCheckboxValue()
+          ? Player(playerId, playerName)
+          : ComputerAI(playerId, playerName);
+
+      // console.log("is Player: ", player.isPlayer());
+      players.push(player);
+    }
 
     // set current Player
-    // currentPlayer = players[0];
 
     // add player 1's ships to queue
     queue.addItems(players[0].getShips());
 
     // create GameInterface object
-    gameUI = GameUI();
+    // gameUI = GameUI();
 
     // call function to create gameBoards for players;
     createGameBoard();
 
     // ????????????????????????????
     // set players?
-    switchPlayers();
+    // switchPlayers();
+    currentPlayer = players[0];
+    enemyPlayer = players[1];
   };
 
   const setShipOnBoard = function (gameBoardObj) {
@@ -74,25 +82,25 @@ const Game = function () {
   };
 
   const playGameComputer = function () {
-    if (currentPlayer === players[0]) return;
+    // timeout = setTimeout(() => {
+    //   timeout = null;
+    //   const randomPosition = currentPlayer.getPositionBoard(enemyPlayer);
 
-    timeout = setTimeout(() => {
-      console.log("Computer: ", { timeout });
-      const randomNumber = Math.floor(Math.random() * 100);
-      const pos = randomNumber < 10 ? "0" + randomNumber : "" + randomNumber;
-      timeout = null;
-      playGame(pos);
-    }, 500);
+    //   playGame(randomPosition);
+    // }, 550);
+    const randomPosition = currentPlayer.getPositionBoard(enemyPlayer);
+    playGame(randomPosition);
   };
 
   const playGame = function (pos) {
-    // console.log("player: ", { timeout });
-
-    if (timeout) {
+    // check if timeout is truthy to prevent call event
+    if (timeout.getTime()) {
       return;
     }
-    console.log("player: ", { timeout });
-    // pass pos variable to get gameboard cell of player2
+
+    // let currentShip = null;
+
+    // pass pos variable to get gameboard cell object with values of player2
     const enemyCellBoard = currentPlayer.getPlayerBoardCell(enemyPlayer, pos);
 
     // check if enemyCellBoard is falsy
@@ -101,18 +109,60 @@ const Game = function () {
       return;
     }
 
-    gameUI.renderTargetGameBoardCell(
-      pos,
-      enemyCellBoard.shipCell,
-      enemyPlayer.getGameId()
-    );
+    // ship object from board element
+    const targetShip = enemyCellBoard.shipCell;
 
-    // console.log({ shipCell: enemyCellBoard.shipCell });
+    // render mark on target cell
+    gameUI.renderTargetGameBoardCell(pos, targetShip, enemyPlayer.getGameId());
 
-    if (!enemyCellBoard.shipCell) {
+    // check if shipcell exists, if there is a ship on cell
+    if (!targetShip) {
+      // change player if we don't hit ship on cell
       switchPlayers();
+      // if (currentPlayer !== players[1]) {
+      //   switchPlayers();
+      // }
+    } else {
+      if (currentPlayer === players[1]) {
+        if (!currentPlayer.getCurrentShip()) {
+          currentPlayer.checkShipHit();
+          currentPlayer.setCurrentShip(targetShip);
+        }
+        // currentShip = enemyCellBoard.shipCell;
+      }
+
+      if (targetShip.isSunk()) {
+        // if (
+        //   enemyPlayer.getShips().every((ship) => {
+        //     return ship.isSunk();
+        //   })
+        // ) {
+        //   console.log("Winner");
+        // }
+
+        ///
+        if (currentPlayer === players[1]) {
+          currentPlayer.uncheckShipHit();
+          currentPlayer.setCurrentShip(null);
+          enemyPlayer.clearComputerPotentialPosition();
+          currentPlayer.clearReservedPositions(
+            targetShip.getReservedPositions()
+          );
+          currentPlayer.clearComputerPotentialPosition();
+        }
+
+        enemyPlayer.setReservedCellBoard(targetShip.getReservedPositions());
+        gameUI.renderReservedPostions(
+          enemyPlayer,
+          targetShip.getReservedPositions()
+        );
+        gameUI.renderShipListAgain(enemyPlayer);
+        // currentShip = null;
+      }
     }
-    playGameComputer();
+    if (currentPlayer.isPlayer()) return;
+
+    timeout.setTime(playGameComputer);
   };
 
   // method set player1 ship board and call event listener for
@@ -120,6 +170,9 @@ const Game = function () {
   const runGame = function () {
     // set random ships for player 2
     players[1].getRandomShipsPosition();
+
+    // generate all positions on gameboard for ComputerAI
+    players[1].saveAllPositionBoard();
 
     // players[1].saveAllPositionBoard(players[1].getPlayerBoard());
     // call method with player 2 gameboard event listeners
