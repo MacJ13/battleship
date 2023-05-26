@@ -28,7 +28,7 @@ const Ship = function (l) {
   }
 
   function isSunk() {
-    return length === numOfHits ? true : false;
+    return length === numOfHits;
   }
 
   function getReservedPositions() {
