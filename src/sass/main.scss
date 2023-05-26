@@ -12,6 +12,7 @@ html {
 }
 
 body {
+  position: relative;
   width: 100%;
   height: 100%;
   max-height: 100vh;
@@ -198,32 +199,6 @@ input::placeholder {
   flex-direction: column;
 }
 
-.ship-pick {
-  flex: 1;
-  display: grid;
-  // grid-template-columns: repeat(1, 1fr);
-  grid-template-columns: repeat(4, 1fr);
-  // background-color: #082f49;
-
-  gap: 2px;
-  padding: 2px;
-
-  margin-bottom: 0.5rem;
-
-  cursor: pointer;
-
-  &-part {
-    height: 1.75rem;
-    width: 1.75rem;
-    background-color: orangered;
-    // background-color: #f0f9ff;
-  }
-
-  &-amount {
-    text-align: center;
-  }
-}
-
 .game-board {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
@@ -284,8 +259,7 @@ input::placeholder {
     display: flex;
     flex-direction: column;
     align-items: end;
-    gap: 0.25rem;
-    margin-bottom: 1.5rem;
+    gap: 4px;
 
     & .sunk {
       opacity: 1;
@@ -293,7 +267,7 @@ input::placeholder {
   }
   &-item {
     display: flex;
-    gap: 2px;
+    gap: 4px;
     opacity: 0.25;
   }
 
@@ -301,6 +275,32 @@ input::placeholder {
     height: 0.5rem;
     width: 0.5rem;
     background-color: #082f49;
+  }
+
+  &-object {
+    flex: 1;
+    display: grid;
+    // grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    // background-color: #082f49;
+
+    gap: 2px;
+    padding: 2px;
+
+    margin-bottom: 0.5rem;
+
+    cursor: pointer;
+
+    &-part {
+      height: 1.75rem;
+      width: 1.75rem;
+      background-color: orangered;
+      // background-color: #f0f9ff;
+    }
+  }
+
+  &-amount {
+    text-align: center;
   }
 }
 
@@ -328,6 +328,63 @@ input::placeholder {
   width: 100%;
 }
 
+.game-track {
+  margin-top: 1.5rem;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-turn {
+  width: 17rem;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  word-spacing: 5px;
+  background-color: #85bafb;
+  color: #f0f9ff;
+  padding: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/////////////////////////////////////////////////
+///  RESULT ELEMENTS
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #133d5963;
+  min-height: 100vh;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &-box {
+    background-color: #f0f9ff;
+    width: 100%;
+    max-width: 25rem;
+    padding: 2.5rem;
+
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
+    border: 2px solid #85bafb;
+  }
+
+  &-result {
+    margin-bottom: 2.5rem;
+
+    font-size: 2rem;
+  }
+}
+
+///
+///
 .show {
   display: block;
 }
