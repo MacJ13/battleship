@@ -1,5 +1,9 @@
+import { splitStr } from "../helpers";
+
 function GameUI() {
   const gameElement = document.querySelector(".game");
+
+  const gameTrackElement = document.querySelector(".game-track");
 
   const gameRandomButton = document.getElementById("game-random-btn");
   const gameResetButton = document.getElementById("game-reset-btn");
@@ -10,28 +14,30 @@ function GameUI() {
 
   const gameBoardPlayer1 = gamePlayer1Element.querySelector(".game-board");
   const gameBoardPlayer2 = gamePlayer2Element.querySelector(".game-board");
+
   const gameButtonsPlayer1 =
     gamePlayer1Element.querySelector(".game-ship-buttons");
 
-  const gameShipPickElement = gamePlayer1Element.querySelector(".ship-pick");
+  const gameShipPickElement =
+    gamePlayer1Element.querySelector(".game-ship-pick");
+  const gameShipObjectElement =
+    gamePlayer1Element.querySelector(".game-ship-object");
   const gameShipAmountElement =
-    gamePlayer1Element.querySelector(".ship-pick-amount");
+    gamePlayer1Element.querySelector(".game-ship-amount");
 
   let draggedTarget = null;
   let targetGameBoardEl = null;
 
   const renderGamePlayerElements = function (players) {
-    // console.log(players);
-    // gameElement.style.display = "block";
+    players.forEach((player) => {
+      const targetGameBoardEl = document.getElementById(player.getGameId());
+      const gamePlayerEl = targetGameBoardEl.querySelector(".game-playername");
+      const gameBoardEl = targetGameBoardEl.querySelector(".game-board");
+      const gameShipListEl = targetGameBoardEl.querySelector(".game-ship-list");
 
-    [gamePlayer1Element, gamePlayer2Element].forEach((playerEl, i) => {
-      const gameBoardEl = playerEl.querySelector(".game-board");
-      const gamePlayerEl = playerEl.querySelector(".game-playername");
-      const gameShipListEl = playerEl.querySelector(".game-ship-list");
-
-      renderPlayerName(gamePlayerEl, players[i].getName());
-      renderGameBoard(gameBoardEl, players[i].getPlayerBoard());
-      renderShipList(gameShipListEl, players[i].getShips());
+      renderPlayerName(gamePlayerEl, player.getName());
+      renderGameBoard(gameBoardEl, player.getPlayerBoard());
+      renderShipList(gameShipListEl, player.getShips());
     });
 
     toggleGameButtons();
@@ -48,36 +54,36 @@ function GameUI() {
   }
 
   function renderShipPick(ship, count) {
-    const parentEl = gameShipPickElement.closest(".game-ship-pick-place");
-    parentEl.style.display = "block";
-    gameShipPickElement.innerHTML = "";
+    showShipPick();
+
+    gameShipObjectElement.innerHTML = "";
 
     if (!ship) {
-      clearShipPick();
+      hideShipPick();
       showPlayButton();
       return;
     }
 
     for (let i = 0; i < ship.getLength(); i++) {
       const span = document.createElement("span");
-      span.className = "ship-pick-part";
+      span.className = "game-ship-object-part";
 
-      gameShipPickElement.appendChild(span);
+      gameShipObjectElement.appendChild(span);
     }
 
-    const { position } = gameShipPickElement.dataset;
+    const { position } = gameShipObjectElement.dataset;
 
     if (position === "horizontal") {
-      gameShipPickElement.style.gridTemplateColumns = `repeat(${gameShipPickElement.children.length}, 1fr)`;
+      gameShipObjectElement.style.gridTemplateColumns = `repeat(${gameShipObjectElement.children.length}, 1fr)`;
     } else {
-      gameShipPickElement.style.gridTemplateColumns = `repeat(1, 1fr)`;
+      gameShipObjectElement.style.gridTemplateColumns = `repeat(1, 1fr)`;
     }
 
     gameShipAmountElement.textContent = `x${count}`;
   }
 
   function renderPlayerName(el, playerName) {
-    el.textContent = playerName;
+    el.textContent = `${playerName} board`;
   }
 
   function renderGameBoard(el, board) {
@@ -87,7 +93,7 @@ function GameUI() {
 
     for (let i = 0; i < size; i++) {
       let pos = i < 10 ? `0${i}` : `${i}`;
-      const [posA, posB] = pos.split("");
+      const [posA, posB] = splitStr(pos);
 
       const span = document.createElement("span");
       span.className = "game-cell";
@@ -100,6 +106,20 @@ function GameUI() {
       el.appendChild(span);
     }
   }
+
+  const isShipPickHidden = function () {
+    return gameShipPickElement.classList.contains("hidden");
+  };
+
+  const hideShipPick = function () {
+    if (isShipPickHidden()) return;
+    gameShipPickElement.classList.add("hidden");
+  };
+
+  const showShipPick = function () {
+    if (!isShipPickHidden()) return;
+    gameShipPickElement.classList.remove("hidden");
+  };
 
   // Do poprawy funkcja
   function renderShipListAgain(player) {
@@ -147,21 +167,16 @@ function GameUI() {
     hidePlayButton();
   };
 
-  const clearShipPick = function () {
-    const parentEl = gameShipPickElement.closest(".game-ship-pick-place");
-    parentEl.style.display = "none";
-  };
-
   const renderRandomGameBoard = function (board) {
     renderGameBoard(gameBoardPlayer1, board);
-    clearShipPick();
+    hideShipPick();
     showPlayButton();
   };
 
   const renderShipOnGameBoard = function (obj, currentShip) {
     const { pos, position } = obj;
 
-    const [x, y] = pos.split("");
+    const [x, y] = splitStr(pos);
 
     for (let i = 0; i < currentShip.getLength(); i++) {
       const currentPos =
@@ -207,7 +222,7 @@ function GameUI() {
   const hideReservedCells = function (board) {
     gameBoardPlayer1.querySelectorAll(".game-cell").forEach((cellEl) => {
       const pos = cellEl.dataset.pos;
-      const [x, y] = pos.split("");
+      const [x, y] = splitStr(pos);
       const { res } = board[+x][+y];
       if (res) {
         cellEl.classList.remove("reserved");
@@ -218,7 +233,7 @@ function GameUI() {
   const showReservedCells = function (board) {
     gameBoardPlayer1.querySelectorAll(".game-cell").forEach((cellEl) => {
       const pos = cellEl.dataset.pos;
-      const [x, y] = pos.split("");
+      const [x, y] = splitStr(pos);
       const { res } = board[+x][+y];
       if (res) {
         cellEl.classList.add("reserved");
@@ -236,8 +251,18 @@ function GameUI() {
     gamePlayButton.classList.remove("hidden");
   };
 
+  const toggleGameTrackEl = function () {
+    gameTrackElement.classList.toggle("hidden");
+  };
+
+  const renderCurrentPlayer = function (currentPlayer) {
+    gameTrackElement.querySelector(
+      ".game-turn"
+    ).textContent = `${currentPlayer.getName()}'s turn`;
+  };
+
   const onClickShipPick = function () {
-    gameShipPickElement.addEventListener("click", (event) => {
+    gameShipObjectElement.addEventListener("click", (event) => {
       changePositionShipPick(event.currentTarget);
     });
   };
@@ -252,7 +277,7 @@ function GameUI() {
 
   const onDropShipPick = function (callback, getBoard) {
     // start draggable
-    gameShipPickElement.addEventListener("dragstart", (event) => {
+    gameShipObjectElement.addEventListener("dragstart", (event) => {
       draggedTarget = event.target;
 
       showReservedCells(getBoard());
@@ -291,25 +316,49 @@ function GameUI() {
   const onClickPlayBtn = function (callback) {
     gamePlayButton.addEventListener("click", () => {
       toggleGameButtons();
+      toggleGameTrackEl();
       callback();
     });
   };
 
+  const getBoardPositionPlayer2 = function (event) {
+    // check if clicked target is element with "game-cell" class
+    const target = event.target;
+    if (!target.classList.contains("game-cell")) return;
+
+    // get attribute data-pos from element
+    const { pos } = event.target.dataset;
+    // return pos attribute;
+    return pos;
+  };
+
   const onClickGameBoardPlayer2 = function (callback) {
-    gameBoardPlayer2.addEventListener("click", (event) => {
-      // check if clicked target is element with "game-cell" class
-      const target = event.target;
-      if (!target.classList.contains("game-cell")) return;
+    // gameBoardPlayer2.addEventListener("click", (event) => {
+    // // check if clicked target is element with "game-cell" class
+    // const target = event.target;
+    // if (!target.classList.contains("game-cell")) return;
 
-      // get attribute data-pos from element
-      const { pos } = event.target.dataset;
+    // // get attribute data-pos from element
+    // const { pos } = event.target.dataset;
 
-      // pass attribute to callback
-      callback(pos);
-    });
+    // // pass attribute to callback
+    // callback(pos);
+    // callback(event);
+    // });
+    gameBoardPlayer2.addEventListener("click", callback);
+  };
+
+  const removeClickGameBoardPlayer2 = function (callback) {
+    gameBoardPlayer2.removeEventListener("click", callback);
   };
 
   return {
+    getBoardPositionPlayer2,
+    hidePlayButton,
+    toggleGameTrackEl,
+    //////////////////
+    renderCurrentPlayer,
+    //////////////////////
     renderReservedPostions,
     //////////////////////
     renderShipListAgain,
@@ -320,13 +369,13 @@ function GameUI() {
     renderRandomGameBoard,
     renderShipPick,
     clearGameBoard,
-    clearShipPick,
     onDropShipPick,
     onClickShipPick,
     onClickResetBtn,
     onClickRandomBtn,
     onClickPlayBtn,
     onClickGameBoardPlayer2,
+    removeClickGameBoardPlayer2,
   };
 }
 
