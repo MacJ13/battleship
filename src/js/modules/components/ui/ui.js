@@ -1,8 +1,8 @@
 const UI = function () {
   const playerMenuEl = document.querySelector(".menu");
-  const player1Input = document.getElementById("player1_name");
-  const player2Input = document.getElementById("player2_name");
-  const computerCheckbox = document.getElementById("computer_name");
+  // const player1Input = document.getElementById("player1_name");
+  // const player2Input = document.getElementById("player2_name");
+  // const computerCheckbox = document.getElementById("computer_name");
   const createPlayerBtn = document.getElementById("create-player-btn");
 
   const getInputValue = function (value, i) {
@@ -17,18 +17,21 @@ const UI = function () {
     // console.dir(computerCheckbox);
     // console.log({ checked: computerCheckbox.checked });
 
-    if (computerCheckbox.checked) {
-      player2Input.value = computerCheckbox.value;
-    }
+    // if (computerCheckbox.checked) {
+    //   player2Input.value = computerCheckbox.value;
+    // }
 
     playerMenuEl.style.display = "none";
 
-    const inputs = playerMenuEl.querySelectorAll(`input[type="text"]`);
+    const inputs = playerMenuEl.querySelectorAll(`input[data-gameboard]`);
 
     inputs.forEach((input, i) => {
-      const playerName = !input.disabled
-        ? getInputValue(input.value, i)
-        : computerCheckbox.value;
+      // const playerName = !input.disabled
+      //   ? getInputValue(input.value, i)
+      //   : computerCheckbox.value;
+      // const playerId = input.dataset.gameboard;
+
+      const playerName = getInputValue(input.value, i);
       const playerId = input.dataset.gameboard;
 
       players.push({ playerId, playerName });
@@ -37,31 +40,29 @@ const UI = function () {
     return players;
   };
 
-  const getCheckboxValue = function () {
-    return computerCheckbox.value;
-  };
+  // const getCheckboxValue = function () {
+  //   return computerCheckbox.value;
+  // };
 
   const onClickCreatePlayer = function (cb) {
-    createPlayerBtn.addEventListener("click", () => {
-      cb();
-    });
+    createPlayerBtn.addEventListener("click", cb);
   };
 
-  const onClickCheckBox = function () {
-    computerCheckbox.addEventListener("change", () => {
-      if (computerCheckbox.checked) {
-        player2Input.disabled = true;
-      } else {
-        player2Input.disabled = false;
-      }
-    });
-  };
+  // const onClickCheckBox = function () {
+  //   computerCheckbox.addEventListener("change", () => {
+  //     if (computerCheckbox.checked) {
+  //       player2Input.disabled = true;
+  //     } else {
+  //       player2Input.disabled = false;
+  //     }
+  //   });
+  // };
 
   return {
     onClickCreatePlayer,
-    onClickCheckBox,
+    // onClickCheckBox,
     getPlayerNames,
-    getCheckboxValue,
+    // getCheckboxValue,
   };
 };
 
