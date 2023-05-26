@@ -123,10 +123,8 @@ function GameUI() {
 
   // Do poprawy funkcja
   function renderShipListAgain(player) {
-    // console.log({ player, id: player.getGameId() });
     const currentBox = document.getElementById(player.getGameId());
     const shipList = currentBox.querySelector(".game-ship-list");
-    // console.log(shipListElTest);
     renderShipList(shipList, player.getShips());
   }
 
@@ -261,6 +259,17 @@ function GameUI() {
     ).textContent = `${currentPlayer.getName()}'s turn`;
   };
 
+  const getBoardPositionPlayer2 = function (event) {
+    // check if clicked target is element with "game-cell" class
+    const target = event.target;
+    if (!target.classList.contains("game-cell")) return;
+
+    // get attribute data-pos from element
+    const { pos } = event.target.dataset;
+    // return pos attribute;
+    return pos;
+  };
+
   const onClickShipPick = function () {
     gameShipObjectElement.addEventListener("click", (event) => {
       changePositionShipPick(event.currentTarget);
@@ -319,17 +328,6 @@ function GameUI() {
       toggleGameTrackEl();
       callback();
     });
-  };
-
-  const getBoardPositionPlayer2 = function (event) {
-    // check if clicked target is element with "game-cell" class
-    const target = event.target;
-    if (!target.classList.contains("game-cell")) return;
-
-    // get attribute data-pos from element
-    const { pos } = event.target.dataset;
-    // return pos attribute;
-    return pos;
   };
 
   const onClickGameBoardPlayer2 = function (callback) {
