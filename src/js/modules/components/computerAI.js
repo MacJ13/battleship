@@ -13,6 +13,7 @@ const ComputerAI = function (id, playerName) {
   let gameboard = player.getPlayerBoard();
 
   const saveAllPositionBoard = function () {
+    if (positionBoard.length !== 0) positionBoard.length = 0;
     let j = 0;
 
     const length = gameboard.length;
@@ -22,7 +23,7 @@ const ComputerAI = function (id, playerName) {
         j++;
         i = 0;
       }
-      if (j === 10) {
+      if (j === length) {
         break;
       }
       positionBoard.push(`${j}${i}`);
@@ -30,7 +31,7 @@ const ComputerAI = function (id, playerName) {
   };
 
   const getPositionBoard = function (enemy) {
-    if (isShipHit || getCurrentShip()) {
+    if (isShipHit || currentHitShip) {
       const nextPosition = enemy.getHitAdjacentPositions(position);
 
       position = nextPosition;
@@ -49,20 +50,16 @@ const ComputerAI = function (id, playerName) {
     return position;
   };
 
-  const checkShipHit = function () {
-    isShipHit = true;
+  const checkShipHit = function (ship) {
+    if (!currentHitShip) {
+      isShipHit = true;
+      currentHitShip = ship;
+    }
   };
 
   const uncheckShipHit = function () {
     isShipHit = false;
-  };
-
-  const setCurrentShip = function (ship) {
-    currentHitShip = ship;
-  };
-
-  const getCurrentShip = function () {
-    return currentHitShip;
+    currentHitShip = null;
   };
 
   const clearReservedPositions = function (reservedPostions) {
@@ -76,8 +73,6 @@ const ComputerAI = function (id, playerName) {
   return Object.assign(player, {
     clearReservedPositions,
     /////////////////////////
-    getCurrentShip,
-    setCurrentShip,
     checkShipHit,
     uncheckShipHit,
     saveAllPositionBoard,
