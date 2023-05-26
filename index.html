@@ -14,30 +14,28 @@
     </header>
     <div class="menu">
       <div class="menu-title">
-        <h2 class="h2">Create Players</h2>
+        <h2 class="h2">Enter Player Name</h2>
       </div>
       <div class="menu-form">
         <div class="menu-player">
-          <!-- <label for="player1_name">Player 1 name</label> -->
           <input
             type="text"
             id="player1_name"
             name="player1_name"
-            placeholder="Player 1 name"
+            placeholder="Player name"
             data-gameboard="game-player1"
           />
         </div>
-        <div class="menu-player">
-          <!-- <label for="player2_name">Player 2 name</label> -->
+        <div class="menu-player hidden">
           <input
-            type="text"
+            type="hidden"
             id="player2_name"
             name="player2_name"
             placeholder="Player 2 name"
             data-gameboard="game-player2"
             value="computer"
           />
-          <div class="menu-computer">
+          <!-- <div class="menu-computer">
             <label for="computer"> play with computer</label>
             <input
               type="checkbox"
@@ -45,7 +43,7 @@
               id="computer_name"
               value="computer"
             />
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="menu-btn">
@@ -78,52 +76,35 @@
             </div>
             <div class="game-ship-pick">
               <div class="game-ship-pick-place">
-                <!-- <div
-                  class="ship-pick"
-                  id="draggable"
-                  draggable="true"
-                  data-position="horizontal"
-                > -->
                 <div
-                  class="ship-pick"
+                  class="game-ship-object"
                   id="draggable"
                   draggable="true"
                   data-position="horizontal"
-                >
-                  <!-- <span class="ship-pick-part"></span>
-                  <span class="ship-pick-part"></span>
-                  <span class="ship-pick-part"></span>
-                  <span class="ship-pick-part"></span> -->
-                </div>
-                <div class="ship-pick-amount"></div>
+                ></div>
+                <div class="game-ship-amount"></div>
               </div>
             </div>
           </div>
         </div>
         <div class="game-box" id="game-player2">
-          <!-- <ul class="game-ship-list">
-            <li class="game-ship-item">
-              <span class="game-ship-part"></span>
-              <span class="game-ship-part"></span>
-              <span class="game-ship-part"></span>
-              <span class="game-ship-part"></span>
-            </li>
-          </ul> -->
           <div class="game-ships">
-            <ul class="game-ship-list">
-              <!-- <li class="game-ship-item">
-                <span class="game-ship-part"></span>
-                <span class="game-ship-part"></span>
-                <span class="game-ship-part"></span>
-                <span class="game-ship-part"></span>
-              </li> -->
-            </ul>
+            <ul class="game-ship-list"></ul>
           </div>
           <div class="game-inner">
             <div class="game-board"></div>
             <h3 class="game-playername h3"></h3>
           </div>
         </div>
+      </div>
+      <div class="game-track hidden">
+        <div class="game-turn">Player's turn</div>
+      </div>
+    </div>
+    <div class="modal hidden">
+      <div class="modal-box">
+        <div class="modal-result">You won the game</div>
+        <button id="game-restart-btn" class="game-ship-btn">restart</button>
       </div>
     </div>
   </body>
