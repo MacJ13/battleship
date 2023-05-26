@@ -1,3 +1,9 @@
+const splitStr = function (str) {
+  return str.split("");
+};
+
+const shipMeasurements = [4, 4, 3, 3, 2, 2, 1, 1];
+
 const queue = (function () {
   let elements = {};
   let head = 0;
@@ -103,4 +109,4 @@ const timeout = (function () {
   return { setTime, getTime };
 })();
 
-export { queue, binarySearch, timeout };
+export { queue, binarySearch, timeout, splitStr, shipMeasurements };
