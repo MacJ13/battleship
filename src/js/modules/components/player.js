@@ -1,22 +1,28 @@
 import Gameboard from "./gameboard";
 import Ship from "./ship";
 
+import { splitStr, shipMeasurements } from "./helpers";
+
 const Player = function (id, playerName) {
   let name = playerName;
   let gameId = id;
 
   const gameboard = Gameboard();
 
-  const ships = [
-    Ship(4),
-    Ship(4),
-    Ship(3),
-    Ship(3),
-    Ship(2),
-    Ship(2),
-    Ship(1),
-    Ship(1),
-  ];
+  const ships = [];
+
+  const createShip = function () {
+    shipMeasurements.forEach((measure) => {
+      ships.push(Ship(measure));
+    });
+  };
+
+  createShip();
+
+  const clearShips = function () {
+    ships.length = 0;
+    createShip();
+  };
 
   const getGameId = function () {
     return gameId;
@@ -31,19 +37,23 @@ const Player = function (id, playerName) {
   };
 
   const getShipOnGameBoard = function (gameBoardObj, ship) {
-    const [x, y] = gameBoardObj.pos.split("");
+    // const [x, y] = gameBoardObj.pos.split("");
+    const [x, y] = splitStr(gameBoardObj.pos);
 
     const shipBoard = gameboard.placeShips(+x, +y, ship, gameBoardObj.position);
     if (!shipBoard) return;
     return true;
   };
 
+  const allShipsSink = function () {
+    return ships.every((ship) => ship.isSunk());
+  };
+
   const getRandomShipsPosition = function () {
     // const shipsArr = [...ships];
     // gameboard.randomPlaceShips(shipsArr);
 
-    const shipsArr = [...ships];
-    gameboard.randomPlaceShips(shipsArr);
+    gameboard.randomPlaceShips(ships);
   };
 
   const getPlayerBoard = function () {
@@ -55,7 +65,7 @@ const Player = function (id, playerName) {
   };
 
   const attack = function (pos) {
-    const [x, y] = pos.split("");
+    const [x, y] = splitStr(pos);
     return gameboard.receiveAttack(+x, +y);
   };
 
@@ -69,8 +79,8 @@ const Player = function (id, playerName) {
   };
 
   const getHitAdjacentPositions = function (pos, currentShip) {
-    const [x, y] = pos.split("");
-    return gameboard.getHitAdjacentPositions(x, y, currentShip);
+    const [x, y] = splitStr(pos);
+    return gameboard.getHitAdjacentPositions(+x, +y, currentShip);
   };
 
   const isPlayer = function () {
@@ -82,9 +92,10 @@ const Player = function (id, playerName) {
   };
 
   return {
+    clearShips,
     setReservedCellBoard,
     ////////////////////////
-
+    allShipsSink,
     clearComputerPotentialPosition,
     getHitAdjacentPositions,
     isPlayer,
