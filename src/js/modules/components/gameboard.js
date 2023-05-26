@@ -33,7 +33,7 @@ const Gameboard = function () {
         j++;
         i = 0;
       }
-      if (j === 10) break;
+      if (j === board.length) break;
 
       board[j][i] = {
         // id: +`${i}${j}`,
@@ -177,8 +177,8 @@ const Gameboard = function () {
     // add possible direction to potential computer position array
     for (let i = 0; i < potentialDirections.length; i++) {
       const [x, y] = potentialDirections[i];
-      const posX = +posA + x;
-      const posY = +posB + y;
+      const posX = posA + x;
+      const posY = posB + y;
       // check if potential direction exist
       if (board[posX]?.[posY]) {
         if (!board[posX][posY].marked) {
@@ -249,13 +249,6 @@ const Gameboard = function () {
             ? isEven(direction)
             : isOdd(direction);
           return result;
-          // correct direction is
-          // if (correctDirection) {
-          //   return isEven(direction);
-
-          // } else {
-          //   return isOdd(direction);
-          // }
         }
       );
       // 5c. we set to check next position in the same direction like our element
@@ -305,35 +298,4 @@ const Gameboard = function () {
   };
 };
 
-const gameboard = Gameboard();
-const ship_four_1 = Ship(4);
-const ship_four_2 = Ship(4);
-const ship_three_1 = Ship(3);
-const ship_three_2 = Ship(3);
-const ship_two_1 = Ship(2);
-const ship_two_2 = Ship(2);
-const ship_one_1 = Ship(1);
-const ship_one_2 = Ship(1);
-
-gameboard.placeShips(0, 0, ship_four_1, "vertical");
-gameboard.placeShips(6, 3, ship_four_2, "vertical");
-gameboard.placeShips(5, 0, ship_three_1, "vertical");
-gameboard.placeShips(9, 6, ship_three_2, "horizontal"); //
-gameboard.placeShips(1, 2, ship_two_1, "vertical");
-gameboard.placeShips(2, 5, ship_two_2, "horizontal");
-gameboard.placeShips(4, 5, ship_one_1, "vertical");
-gameboard.placeShips(4, 7, ship_one_2, "horizontal");
-
-// console.log(gameboard.board);
-gameboard.receiveAttack(0, 0);
-gameboard.receiveAttack(1, 0);
-gameboard.receiveAttack(2, 0);
-gameboard.receiveAttack(3, 0);
-// console.log(ship_four_1.getPositions());
-// console.log(gameboard.board);
-// const shipTest = new Ship(4);
-// gameboard.placeShips(5, 0, shipTest, "hori");
-
-// // console.log(gameboard.board);
-// console.log(shipTest.position);
 export default Gameboard;
