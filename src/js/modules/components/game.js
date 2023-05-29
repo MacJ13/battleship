@@ -29,23 +29,17 @@ const Game = function () {
           ? Player(playerId, playerName)
           : ComputerAI(playerId, playerName);
 
-      // console.log("is Player: ", player.isPlayer());
       players.push(player);
     }
-
-    // set current Player
+    // set players?
+    currentPlayer = players[0];
+    enemyPlayer = players[1];
 
     // add player 1's ships to queue
     queue.addItems(players[0].getShips());
 
     // call function to create gameBoards for players;
     createGameBoard();
-
-    // ????????????????????????????
-    // set players?
-    // switchPlayers();
-    currentPlayer = players[0];
-    enemyPlayer = players[1];
   };
 
   const setShipOnBoard = function (gameBoardObj) {
@@ -154,13 +148,13 @@ const Game = function () {
         targetShip.getReservedPositions()
       );
       // render hit ship element on ship list element
-      gameUI.renderShipListAgain(enemyPlayer);
+      gameUI.renderSunkShipsOnList(enemyPlayer);
     }
 
     // check if all enemy ships are sunks
     if (enemyPlayer.allShipsSink()) {
       gameUI.removeClickGameBoardPlayer2(playGameUser);
-      endGame();
+      timeout.setTime(endGame);
     }
   };
 
@@ -198,7 +192,11 @@ const Game = function () {
     gameUI.renderShipPick(ship, countShipTypes);
 
     gameUI.onClickShipPick();
-    gameUI.onDropShipPick(setShipOnBoard, players[0].getPlayerBoard);
+
+    // gameUI.onDropShipPick(setShipOnBoard, players[0].getPlayerBoard);
+    gameUI.onDragShipPick(players[0].getPlayerBoard());
+    gameUI.onDropShipPick(setShipOnBoard);
+
     gameUI.onClickResetBtn(clearGameBoard);
     gameUI.onClickRandomBtn(setRandomShipsOnBoard);
     gameUI.onClickPlayBtn(runGame);
