@@ -26,14 +26,14 @@ function GameUI() {
     gamePlayer1Element.querySelector(".game-ship-amount");
 
   let draggedTarget = null;
-  let targetGameBoardEl = null;
+  let targetGameBoxEl = null;
 
   const renderGamePlayerElements = function (players) {
     players.forEach((player) => {
-      const targetGameBoardEl = document.getElementById(player.getGameId());
-      const gamePlayerEl = targetGameBoardEl.querySelector(".game-playername");
-      const gameBoardEl = targetGameBoardEl.querySelector(".game-board");
-      const gameShipListEl = targetGameBoardEl.querySelector(".game-ship-list");
+      targetGameBoxEl = document.getElementById(player.getGameId());
+      const gamePlayerEl = targetGameBoxEl.querySelector(".game-playername");
+      const gameBoardEl = targetGameBoxEl.querySelector(".game-board");
+      const gameShipListEl = targetGameBoxEl.querySelector(".game-ship-list");
 
       renderPlayerName(gamePlayerEl, player.getName());
       renderGameBoard(gameBoardEl, player.getPlayerBoard());
@@ -122,9 +122,9 @@ function GameUI() {
   };
 
   // Do poprawy funkcja
-  function renderShipListAgain(player) {
-    const currentBox = document.getElementById(player.getGameId());
-    const shipList = currentBox.querySelector(".game-ship-list");
+  function renderSunkShipsOnList(player) {
+    targetGameBoxEl = document.getElementById(player.getGameId());
+    const shipList = targetGameBoxEl.querySelector(".game-ship-list");
     renderShipList(shipList, player.getShips());
   }
 
@@ -148,11 +148,12 @@ function GameUI() {
   }
 
   const renderTargetGameBoardCell = function (pos, ship, gameBoardId) {
-    targetGameBoardEl = document.getElementById(gameBoardId);
+    targetGameBoxEl = document.getElementById(gameBoardId);
 
-    const gameBoardCell = targetGameBoardEl.querySelector(
+    const gameBoardCell = targetGameBoxEl.querySelector(
       `span[data-pos="${pos}"]`
     );
+    if (!ship) gameBoardCell.classList.add("reserved");
 
     const span = document.createElement("span");
     span.className = ship ? "hit" : "miss";
@@ -188,14 +189,15 @@ function GameUI() {
   };
 
   const renderReservedPostions = function (player, reservedPositions) {
-    const currentBox = document.getElementById(player.getGameId());
+    targetGameBoxEl = document.getElementById(player.getGameId());
 
     for (let i = 0; i < reservedPositions.length; i++) {
       const { posA, posB } = reservedPositions[i];
-      const boardCell = currentBox.querySelector(
+      const boardCell = targetGameBoxEl.querySelector(
         `span[data-pos="${posA}${posB}"]`
       );
       if (boardCell.childElementCount <= 0) {
+        boardCell.classList.add("reserved");
         const span = document.createElement("span");
         span.className = "miss";
         boardCell.appendChild(span);
@@ -284,32 +286,42 @@ function GameUI() {
     gameRandomButton.addEventListener("click", callback);
   };
 
-  const onDropShipPick = function (callback, getBoard) {
+  const onDragShipPick = function (board) {
     // start draggable
     gameShipObjectElement.addEventListener("dragstart", (event) => {
-      draggedTarget = event.target;
-
-      showReservedCells(getBoard());
+      draggedTarget = event.target; // target element, which is draggeble
+      showReservedCells(board);
     });
 
-    // gameBoardPlayer1.addEventListener("dragover", (event) => {
-    document.body.addEventListener("dragover", (event) => {
+    gameShipObjectElement.addEventListener("dragend", () => {
+      // fires when user end to drag element
+      hideReservedCells(board);
+    });
+  };
+
+  const onDropShipPick = function (callback) {
+    // const onDropShipPick = function (callback, getBoard) {
+    gameBoardPlayer1.addEventListener("dragover", (event) => {
+      // document.body.addEventListener("dragover", (event) => {
       // prevent default to allow drop
       event.preventDefault();
     });
 
-    // gameBoardPlayer1.addEventListener("drop", (event) => {
-    document.body.addEventListener("drop", (event) => {
+    gameBoardPlayer1.addEventListener("drop", (event) => {
+      // document.body.addEventListener("drop", (event) => {
       event.preventDefault();
-      // move dragged element to the selected drop target {
-      hideReservedCells(getBoard());
-      const parent = event.target.closest("#game-player1");
 
-      if (
-        !parent ||
-        !draggedTarget ||
-        !event.target.classList.contains("game-cell")
-      )
+      // move dragged element to the selected drop target {
+      // const parent = event.target.closest("#game-player1");
+
+      // if (
+      //   // !parent ||
+      //   !draggedTarget ||
+      //   !event.target.classList.contains("game-cell")
+      // )
+      //
+
+      if (!draggedTarget || !event.target.classList.contains("game-cell"))
         return;
 
       const obj = {
@@ -359,7 +371,7 @@ function GameUI() {
     //////////////////////
     renderReservedPostions,
     //////////////////////
-    renderShipListAgain,
+    renderSunkShipsOnList,
     //////////////////////
     renderTargetGameBoardCell,
     renderGamePlayerElements,
@@ -367,6 +379,7 @@ function GameUI() {
     renderRandomGameBoard,
     renderShipPick,
     clearGameBoard,
+    onDragShipPick,
     onDropShipPick,
     onClickShipPick,
     onClickResetBtn,
