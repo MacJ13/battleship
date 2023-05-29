@@ -93,7 +93,7 @@ const binarySearch = function (arr, index) {
 // timeout for computer player two stop time for some time
 const timeout = (function () {
   let timeoutVar = null;
-  let second = 500;
+  let second = 750;
 
   const setTime = function (cb) {
     timeoutVar = setTimeout(() => {
