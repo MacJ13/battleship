@@ -9,7 +9,7 @@ const EndUI = function () {
 
   const renderGameResult = function (playerName) {
     const winnerName = playerName[0].toUpperCase() + playerName.slice(1);
-    const result = `${winnerName} won`;
+    const result = `${winnerName} won game!`;
     modalResultEl.textContent = result;
   };
 
